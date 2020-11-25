@@ -22,17 +22,6 @@ class CalcConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def newEquation(self, string):
-        # connection = psycopg2.connect(user="postgres",
-        #                           password="postgres",
-        #                           host="192.168.99.100",
-        #                           port="5432",
-        #                           database="postgres_db")
-
-        # cursor = connection.cursor()
-        # postgres_insert_query = """ INSERT INTO calculator_equation (equation_string) VALUES (%s)"""
-        # record_to_insert = ("5 * 5 = 25")
-        # cursor.execute(postgres_insert_query, record_to_insert)
-        # connection.commit()
         Equation.objects.create(equation_string=string)
 
     # Receive message from WebSocket
