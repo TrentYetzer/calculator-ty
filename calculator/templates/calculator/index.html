@@ -98,8 +98,9 @@
         document.getElementById("input-bar").value = "";
       }
 
+      var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
       const historySocket = new WebSocket(
-        "ws://" + window.location.host + "/history/"
+        ws_scheme + "://" + window.location.host + "/history/"
       );
 
       historySocket.onopen = function() {
