@@ -4,11 +4,11 @@ Calculator web app that gives live updates to history across browsers and hold i
 
 ## Technologies
 
-Django
-Django Channels
-Redis
-PostgreSQL
-Docker
+- Django
+- Django Channels
+- Redis
+- PostgreSQL
+- Docker
 
 ## Issues
 
