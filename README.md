@@ -1,9 +1,11 @@
 # Calculator
-    Calculator web app that gives live updates to history across browsers and hold it has persistant data.
+
+Calculator web app that gives live updates to history across browsers and hold it has persistant data.
 
 ## Issues
-    Currently, I am having an issue with the django channels because the websock
-    immediatly closes on the deployed Heroku app. I play to fix it soon, but I need to go home for Thanksgiving.
+
+Currently, I am having an issue with the django channels because the websocket
+immediatly closes on the deployed Heroku app. I play to fix it soon, but I need to go home for Thanksgiving.
 
 ## Deployment
     - git clone https://github.com/TrentYetzer/calculator-ty.git
