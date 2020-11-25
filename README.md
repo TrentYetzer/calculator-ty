@@ -2,6 +2,14 @@
 
 Calculator web app that gives live updates to history across browsers and hold it has persistant data.
 
+## Technologies
+
+Django
+Django Channels
+Redis
+PostgreSQL
+Docker
+
 ## Issues
 
 Currently, I am having an issue with the django channels because the websocket
