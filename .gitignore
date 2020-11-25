@@ -1,0 +1,4 @@
+/calcenv
+__pycache__
+gettingstarted/static/
+local-var.env

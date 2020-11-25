@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator</title>
+  </head>
+  <style>
+    body {
+      height: 100%;
+      overflow: hidden;
+      color: #2B2D42;
+      list-style: none;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: repeat(4, auto) repeat(2, 8rem);
+      grid-template-rows: repeat(5, 19vh);
+      gap: 0.3rem;
+    }
+    input {
+      font-size: 1.5rem;
+      border: 2px solid #2B2D42;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    input[type="button"] {
+        background-color: #EDF2F4;
+        transition: all 0.3s ease;
+    }
+    input[type="button"]:hover {
+        filter: brightness(90%);
+    }
+    input[type="button"]:active {
+        transform: scale(1.03);
+    }
+    #input-bar {
+      position: relative;
+      display: flex;
+      grid-column: 1 / span 3;
+      word-wrap: break-word;
+    }
+    .history {
+      grid-column: 5 / 8;
+      grid-row: 1 / span 5;
+      width: 100%;
+      font-size: 1.5rem;
+      text-align: left;
+    }
+    li {
+        margin: 2rem 0;
+        list-style: none;
+    }
+    li:nth-child(1n + 11) {
+        display: none;
+    }
+    .title {
+        text-align: center;
+    }
+  </style>
+  <body>
+    <div class="layout">
+      <input id="input-bar" type="text" />
+      <input type="button" value="C" onclick="clearInput()" />
+      <input type="button" value="1" onclick="updateInputBar('1')" />
+      <input type="button" value="2" onclick="updateInputBar('2')" />
+      <input type="button" value="3" onclick="updateInputBar('3')" />
+      <input type="button" value="/" onclick="updateInputBar('/')" />
+      <input type="button" value="4" onclick="updateInputBar('4')" />
+      <input type="button" value="5" onclick="updateInputBar('5')" />
+      <input type="button" value="6" onclick="updateInputBar('6')" />
+      <input type="button" value="*" onclick="updateInputBar('*')" />
+      <input type="button" value="7" onclick="updateInputBar('7')" />
+      <input type="button" value="8" onclick="updateInputBar('8')" />
+      <input type="button" value="9" onclick="updateInputBar('9')" />
+      <input type="button" value="+" onclick="updateInputBar('+')" />
+      <input type="button" value="." onclick="updateInputBar('.')" />
+      <input type="button" value="0" onclick="updateInputBar('0')" />
+      <input id="equation-solve" type="button" value="=" />
+      <input type="button" value="-" onclick="updateInputBar('-')" />
+      <div class="history">
+        <div class="title">
+            <h5>History</h5>
+        <hr />
+        </div>
+        <ul id="history-log">
+            {% for element in equations.all %}
+                <li><p>{{element.equation_string}}</p></li>
+            {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <script>
+      function updateInputBar(value) {
+        document.getElementById("input-bar").value += value + " ";
+      }
+      function clearInput() {
+        document.getElementById("input-bar").value = "";
+      }
+
+      const historySocket = new WebSocket(
+        "ws://" + window.location.host + "/history/"
+      );
+
+      historySocket.onopen = function() {
+        console.log('Successful Connection To Server.');
+    };
+
+    document.querySelector("#input-bar").onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            console.log("Enter");
+            document.getElementById('equation-solve').click();
+        }
+    };
+
+      historySocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        var list = document.getElementById("history-log");
+        var element = document.createElement("li");
+        element.appendChild(document.createTextNode(data.message));
+        list.insertBefore(element, list.firstChild);
+      };
+
+      historySocket.onclose = function (e) {
+          console.log(e);
+        console.error("Chat socket closed unexpectedly");
+      };
+
+      document.querySelector("#equation-solve").onclick = function () {
+        const equationDom = document.querySelector("#input-bar");
+        var equation;
+        try {
+            equation = equationDom.value + "= " + Math.round(eval(equationDom.value) * 100) / 100;
+            if(equation === "= NaN") {
+                equation = "Error";
+            }
+        } catch(error) {
+            equation = "Error";
+        }
+        historySocket.send(
+          JSON.stringify({
+            'message': equation,
+          })
+        );
+        equationDom.value = "";
+      };
+    </script>
+  </body>
+</html>
